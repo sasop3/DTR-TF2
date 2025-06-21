@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtr.Controller">
+   <children>
+      <Button layoutX="400.0" layoutY="201.0" mnemonicParsing="false" onAction="#DemofileChooser" prefHeight="25.0" prefWidth="184.0" text="Choose Demo Location" />
+      <Button layoutX="403.0" layoutY="73.0" mnemonicParsing="false" text="Change TF2 directory location" />
+      <Label fx:id="TF2DIRLABEL" alignment="TOP_LEFT" layoutX="8.0" layoutY="79.0" prefHeight="95.0" prefWidth="361.0" text="Not detected" wrapText="true" />
+      <Label fx:id="DEMOPATHLABEL" alignment="TOP_LEFT" layoutX="8.0" layoutY="202.0" prefHeight="87.0" prefWidth="365.0" text="None" wrapText="true" />
+      <Line endX="442.33331298828125" layoutX="147.0" layoutY="174.0" opacity="0.22" startX="-139.0" />
+   </children>
+</AnchorPane>
