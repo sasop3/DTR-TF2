@@ -24,7 +24,6 @@ public class Controller {
     public boolean FindTF2DIR() {
 
         File temp;
-        File TF2DIRLOCATION;
 
         for (File i : File.listRoots()) {
             if (new File(
@@ -42,15 +41,18 @@ public class Controller {
             temp = new File(
                     i + "Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays");
             if (temp.exists()) {
-                TF2DIRLOCATION = temp;
-            } else {
-                if (new File(i + "SteamLibrary\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays")
-                        .exists())
-                    ;
+                tf2Path = temp.toPath();
+                return true;
+            }
+
+            temp = new File(i + "SteamLibrary\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays");
+            if (temp.exists()) {
+                tf2Path = temp.toPath();
+                return true;
             }
 
         }
-        return false;// debug
+        return false;
     }
 
     public boolean isTF2DIRDETECTED() {
@@ -91,15 +93,31 @@ public class Controller {
             tf2Path = tmp.toPath();
             TF2DIRLABEL.setText(tmp.getAbsolutePath());
         }
+
     }
 
     public void ConvertButtonHandler(ActionEvent e) {
-        Alert error = new Alert(AlertType.ERROR);
-        error.setTitle("MULTIPLE TF2 DIRECTROIES DETECTED");
-        error.setContentText(
-                "Multiple TF2 DIRECTORIES WERE DETECTED\n\n Please manually choose the location of the desire tf2 directory");
-        error.setHeaderText(null);
-        error.showAndWait();
+
+    }
+
+    public void startup() {
+
+        if (!isTF2DIRDETECTED()) {
+            Alert error = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            error.setTitle("TF2 DIRECTORY NOT DETECTED");
+            error.setContentText(
+                    "TF2 DIRECTORY WAS NOT DETECTED\n\n Please manually choose the location of your tf2 directory");
+            error.setHeaderText(null);
+            error.showAndWait();
+
+        }
+
+
+
+        FindTF2DIR();
+        TF2DIRLABEL.setText(tf2Path + "");
+
     }
 
 }
+
