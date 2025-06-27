@@ -1,15 +1,18 @@
 package dtr;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
-import java.security.PublicKey;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.apache.commons.io.FileUtils;
 
 public class Controller {
 
@@ -27,9 +30,9 @@ public class Controller {
 
         for (File i : File.listRoots()) {
             if (new File(
-                    i + "Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays")
+                    i + "Program Files (x86)/Steam/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                     .exists() &&
-                    new File(i + "SteamLibrary\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays")
+                    new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                             .exists()) {
                 Alert error = new Alert(AlertType.ERROR);
                 error.setTitle("MULTIPLE TF2 DIRECTROIES DETECTED");
@@ -39,13 +42,13 @@ public class Controller {
             }
 
             temp = new File(
-                    i + "Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays");
+                    i + "Program Files (x86)/Steam/steamapps/common/Team Fortress 2/tf/replay/client/replays");
             if (temp.exists()) {
                 tf2Path = temp.toPath();
                 return true;
             }
 
-            temp = new File(i + "SteamLibrary\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays");
+            temp = new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays");
             if (temp.exists()) {
                 tf2Path = temp.toPath();
                 return true;
@@ -60,21 +63,17 @@ public class Controller {
 
         for (File i : File.listRoots()) {
             if (new File(
-                    i + "Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays")
+                    i + "Program Files (x86)/Steam/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                     .exists())
                 check = true;
             else {
-                if (new File(i + "SteamLibrary\\steamapps\\common\\Team Fortress 2\\tf\\replay\\client\\replays")
+                if (new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                         .exists())
                     check = true;
             }
         }
 
         return check;
-    }
-
-    public void ConvertDemoFile(Path path) {
-
     }
 
     public void DemofileChooser(ActionEvent e) {
@@ -86,8 +85,9 @@ public class Controller {
     }
 
     public void TF2DIRChooser(ActionEvent e) {
-        FileChooser tf2Chooser = new FileChooser();
-        File tmp = tf2Chooser.showOpenDialog(null);
+        DirectoryChooser tf2Chooser = new DirectoryChooser();
+
+        File tmp = tf2Chooser.showDialog(null);
 
         if (tmp != null) {
             tf2Path = tmp.toPath();
@@ -97,6 +97,12 @@ public class Controller {
     }
 
     public void ConvertButtonHandler(ActionEvent e) {
+
+        try {
+            FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
     }
 
@@ -112,12 +118,9 @@ public class Controller {
 
         }
 
-
-
         FindTF2DIR();
         TF2DIRLABEL.setText(tf2Path + "");
 
     }
 
 }
-
