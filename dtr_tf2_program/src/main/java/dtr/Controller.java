@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class Controller {
 
     public void DemofileChooser(ActionEvent e) {
         FileChooser demofilechooser = new FileChooser();
+        demofilechooser.setTitle("Choose DemoFile");
         DEMOFILE = demofilechooser.showOpenDialog(null);
 
         if (DEMOFILE != null)
@@ -91,7 +93,7 @@ public class Controller {
 
     public void TF2DIRChooser(ActionEvent e) {
         DirectoryChooser tf2Chooser = new DirectoryChooser();
-
+        tf2Chooser.setTitle("choose Tf2 directory");
         File tmp = tf2Chooser.showDialog(null);
 
         if (tmp != null) {
@@ -115,29 +117,40 @@ public class Controller {
 
         for (String name : files) {
             name = name.replaceAll("replay_", "");
-            name = name.replaceAll(".dmx", "");         //not too fond of this way
+            name = name.replaceAll(".dmx", ""); // not too fond of this way
             filteredfiles.add(Integer.parseInt(name));
         }
 
         max = filteredfiles.get(0);
         for (int i = 0; i < files.length; i++) {
-            if(max < filteredfiles.get(i))
-            {
+            if (max < filteredfiles.get(i)) {
                 max = filteredfiles.get(i);
             }
         }
-        
-        return max+1;
+
+        return max + 1;
     }
 
     public void ConvertButtonHandler(ActionEvent e) {
 
+        String dmxString = "\r\n" +
+                "\"replay_" + getHighestReplayNumber() + "\"\r\n" +
+                "{\r\n" +
+                " \"handle\"  " + "\"" + getHighestReplayNumber() + "\"\r\n" +
+                " \"map\"  \"cp_sunshine\"\r\n" + // placeholder
+                " \"complete\"  \"1\"\r\n" +
+                " \"title\"  \"TESTOFDTR\"\r\n" + // placeholder
+                " \"recon_filename\" " + "\"" + "DEMOFILE.getName()" + "\"" + "\r\n" + //debug
+                "}";
+
+
+                
         try {
-            // FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
-            // File file = new File("something.dmx");
-            // file.createNewFile();
-            // FileUtils.moveToDirectory(file, tf2Path.toFile(), false);
-            System.out.println(getHighestReplayNumber()); //debug
+            FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+            File file = new File("replay_" + getHighestReplayNumber() + ".dmx");
+            file.createNewFile();
+            FileUtils.writeStringToFile(file, dmxString, StandardCharsets.UTF_8);
+            FileUtils.moveToDirectory(file, tf2Path.toFile(), false);
 
         } catch (Exception ex) {
             ex.printStackTrace();

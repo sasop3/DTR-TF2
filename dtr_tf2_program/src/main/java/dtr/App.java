@@ -22,6 +22,7 @@ public class App extends Application {
         Image icon = new Image(getClass().getResourceAsStream("Star_of_my_own.png"));
         stage.getIcons().add(icon);
         stage.setResizable(false);
+        stage.setTitle("DTR");
         stage.show();
         Controller tf = loader.getController();
 
