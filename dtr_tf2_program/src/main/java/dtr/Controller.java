@@ -3,8 +3,13 @@ package dtr;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -96,10 +101,44 @@ public class Controller {
 
     }
 
+    public int getHighestReplayNumber() {
+        int max = 0;
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".dmx") && name.startsWith("replay_");
+            }
+
+        };
+        String[] files = tf2Path.toFile().list(filter);
+        List<Integer> filteredfiles = new ArrayList<Integer>();
+
+        for (String name : files) {
+            name = name.replaceAll("replay_", "");
+            name = name.replaceAll(".dmx", "");         //not too fond of this way
+            filteredfiles.add(Integer.parseInt(name));
+        }
+
+        max = filteredfiles.get(0);
+        for (int i = 0; i < files.length; i++) {
+            if(max < filteredfiles.get(i))
+            {
+                max = filteredfiles.get(i);
+            }
+        }
+        
+        return max+1;
+    }
+
     public void ConvertButtonHandler(ActionEvent e) {
 
         try {
-            FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+            // FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+            // File file = new File("something.dmx");
+            // file.createNewFile();
+            // FileUtils.moveToDirectory(file, tf2Path.toFile(), false);
+            System.out.println(getHighestReplayNumber()); //debug
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
