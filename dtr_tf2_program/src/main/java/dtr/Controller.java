@@ -1,11 +1,7 @@
 package dtr;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -140,11 +136,9 @@ public class Controller {
                 " \"map\"  \"cp_sunshine\"\r\n" + // placeholder
                 " \"complete\"  \"1\"\r\n" +
                 " \"title\"  \"TESTOFDTR\"\r\n" + // placeholder
-                " \"recon_filename\" " + "\"" + "DEMOFILE.getName()" + "\"" + "\r\n" + //debug
+                " \"recon_filename\" " + "\"" + DEMOFILE.getName() + "\"" + "\r\n" +
                 "}";
 
-
-                
         try {
             FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
             File file = new File("replay_" + getHighestReplayNumber() + ".dmx");
