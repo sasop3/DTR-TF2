@@ -2,11 +2,13 @@ package dtr;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.image.Image;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -14,10 +16,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import org.apache.commons.io.FileUtils;
+
+import javafx.application.Application;
 
 public class Controller {
 
+
+    
     @FXML
     private Label DEMOPATHLABEL;
     @FXML
@@ -25,6 +33,17 @@ public class Controller {
 
     private File DEMOFILE;
     private Path tf2Path;
+
+    public static void ShowError(String Title, String TextContent) {
+        Alert error = new Alert(AlertType.ERROR);
+        error.setTitle(Title);
+        error.setHeaderText(null);
+        Stage stage = (Stage) error.getDialogPane().getScene().getWindow();
+        Image img = new Image(Controller.class.getResourceAsStream("errorIcon.png"));
+        stage.getIcons().add(img);
+        error.setContentText(TextContent);
+        error.showAndWait();
+    }
 
     public boolean FindTF2DIR() {
 
@@ -36,11 +55,8 @@ public class Controller {
                     .exists() &&
                     new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                             .exists()) {
-                Alert error = new Alert(AlertType.ERROR);
-                error.setTitle("MULTIPLE TF2 DIRECTROIES DETECTED");
-                error.setContentText(
-                        "Multiple TF2 DIRECTORIES WERE DETECTED\n Please manually choose the location of your tf2 directory");
-                error.showAndWait();
+                ShowError("MULTIPLE TF2 DIRECTROIES DETECTED", "Multiple TF2 DIRECTORIES WERE DETECTED\\n" + //
+                        " Please manually choose the location of your tf2 directory");
             }
 
             temp = new File(
@@ -140,27 +156,38 @@ public class Controller {
                 "}";
 
         try {
-            FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+            if (OptionsController.dupedemooption) {
+                FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
+            } else {
+                FileUtils.moveFileToDirectory(DEMOFILE, tf2Path.toFile(), false);
+            }
+
             File file = new File("replay_" + getHighestReplayNumber() + ".dmx");
             file.createNewFile();
             FileUtils.writeStringToFile(file, dmxString, StandardCharsets.UTF_8);
             FileUtils.moveToDirectory(file, tf2Path.toFile(), false);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
 
+    @FXML
+    public void Openoptions(ActionEvent e) {
+
+        try {
+            new options().showOptions();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void startup() {
 
         if (!isTF2DIRDETECTED()) {
-            Alert error = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
-            error.setTitle("TF2 DIRECTORY NOT DETECTED");
-            error.setContentText(
+
+            ShowError("TF2 DIRECTORY NOT DETECTED",
                     "TF2 DIRECTORY WAS NOT DETECTED\n\n Please manually choose the location of your tf2 directory");
-            error.setHeaderText(null);
-            error.showAndWait();
 
         }
 
