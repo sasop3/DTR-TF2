@@ -2,7 +2,6 @@ package dtr;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -20,12 +19,8 @@ import javafx.stage.Stage;
 
 import org.apache.commons.io.FileUtils;
 
-import javafx.application.Application;
-
 public class Controller {
 
-
-    
     @FXML
     private Label DEMOPATHLABEL;
     @FXML
@@ -39,7 +34,7 @@ public class Controller {
         error.setTitle(Title);
         error.setHeaderText(null);
         Stage stage = (Stage) error.getDialogPane().getScene().getWindow();
-        Image img = new Image(Controller.class.getResourceAsStream("errorIcon.png"));
+        Image img = new Image(Controller.class.getResourceAsStream("/errorIcon.png"));
         stage.getIcons().add(img);
         error.setContentText(TextContent);
         error.showAndWait();
@@ -105,7 +100,7 @@ public class Controller {
 
     public void TF2DIRChooser(ActionEvent e) {
         DirectoryChooser tf2Chooser = new DirectoryChooser();
-        tf2Chooser.setTitle("choose Tf2 directory");
+        tf2Chooser.setTitle("Choose TF2 directory");
         File tmp = tf2Chooser.showDialog(null);
 
         if (tmp != null) {
@@ -156,7 +151,7 @@ public class Controller {
                 "}";
 
         try {
-            if (OptionsController.dupedemooption) {
+            if (OptionsController.DupedDemoOption) {
                 FileUtils.copyFileToDirectory(DEMOFILE, tf2Path.toFile());
             } else {
                 FileUtils.moveFileToDirectory(DEMOFILE, tf2Path.toFile(), false);
@@ -177,9 +172,16 @@ public class Controller {
 
         try {
             new options().showOptions();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+    }
+
+    public void LoadSettings() {
+        // TO-DO
+
     }
 
     public void startup() {

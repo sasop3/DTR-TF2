@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.sourcePaths": ["src"],
+  "java.project.referencedLibraries": ["C:/Users/Ali_a/Desktop/DTR-TF2-main/dtr_tf2_program\resources"]
 }

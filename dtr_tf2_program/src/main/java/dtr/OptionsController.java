@@ -1,27 +1,27 @@
 package dtr;
 
-import java.io.IOException;
+import java.io.FileOutputStream;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
+import java.io.OutputStream;
+
+
 
 public class OptionsController extends options {
 
-    public static boolean dupedemooption = false;
-
-    @FXML
-    private CheckBox dupecheckbox;
+    public static boolean DupedDemoOption = false;
 
     public void Savebutton() {
 
-        try {
-            dupedemooption = dupecheckbox.isSelected();
-            System.out.println(dupedemooption); //debug
-            close();
-        } catch (IOException e) {
+        DupedDemoOption = DupeCheckBox.isSelected();
+        
+        prop.setProperty("DupeDemoOption", DupedDemoOption + "");
+        
+        try(OutputStream output = new FileOutputStream("src/main/java/config.cfg")) {
+            prop.store(output, null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
+        System.out.println("finished");
     }
 
 }
