@@ -1,7 +1,10 @@
 package dtr;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -89,7 +92,7 @@ public class Controller {
         return check;
     }
 
-    public void DemofileChooser(ActionEvent e) {
+    public void DemofileChooser(@SuppressWarnings("exports") ActionEvent e) {
         FileChooser demofilechooser = new FileChooser();
         demofilechooser.setTitle("Choose DemoFile");
         DEMOFILE = demofilechooser.showOpenDialog(null);
@@ -98,7 +101,7 @@ public class Controller {
             DEMOPATHLABEL.setText(DEMOFILE.getAbsolutePath());
     }
 
-    public void TF2DIRChooser(ActionEvent e) {
+    public void TF2DIRChooser(@SuppressWarnings("exports") ActionEvent e) {
         DirectoryChooser tf2Chooser = new DirectoryChooser();
         tf2Chooser.setTitle("Choose TF2 directory");
         File tmp = tf2Chooser.showDialog(null);
@@ -138,13 +141,44 @@ public class Controller {
         return max + 1;
     }
 
-    public void ConvertButtonHandler(ActionEvent e) {
+    public static String readBytes(DataInputStream dis, int maxLength) throws IOException {
+        byte[] buffer = new byte[maxLength];
+        dis.readFully(buffer);
+        int length = 0;
+        while (length < maxLength && buffer[length] != 0) {
+            length++;
+        }
+        return new String(buffer, 0, length, "UTF-8");
+    }
 
+    public static String extractMapName(File demoFile) {
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(demoFile))) {
+            dis.skipBytes(8 + 4 + 4);
+            dis.skipBytes(260);
+            dis.skipBytes(260);
+
+
+            return readBytes(dis, 260);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+    
+
+    public void ConvertButtonHandler(@SuppressWarnings("exports") ActionEvent e) {
+
+        if (DEMOFILE == null) {
+            ShowError("Demofile not selected", "You have not Selected a demo file");
+            return;
+        }
+        
         String dmxString = "\r\n" +
                 "\"replay_" + getHighestReplayNumber() + "\"\r\n" +
                 "{\r\n" +
                 " \"handle\"  " + "\"" + getHighestReplayNumber() + "\"\r\n" +
-                " \"map\"  \"cp_sunshine\"\r\n" + // placeholder
+                " \"map\"  \"" + extractMapName(DEMOFILE) + "\"\r\n" + 
                 " \"complete\"  \"1\"\r\n" +
                 " \"title\"  \"TESTOFDTR\"\r\n" + // placeholder
                 " \"recon_filename\" " + "\"" + DEMOFILE.getName() + "\"" + "\r\n" +
@@ -168,7 +202,7 @@ public class Controller {
     }
 
     @FXML
-    public void Openoptions(ActionEvent e) {
+    public void Openoptions(@SuppressWarnings("exports") ActionEvent e) {
 
         try {
             new options().showOptions();
@@ -190,7 +224,6 @@ public class Controller {
 
             ShowError("TF2 DIRECTORY NOT DETECTED",
                     "TF2 DIRECTORY WAS NOT DETECTED\n\n Please manually choose the location of your tf2 directory");
-
         }
 
         FindTF2DIR();
