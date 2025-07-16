@@ -209,15 +209,23 @@ public class Controller extends App {
         try {
             new options().showOptions();
             // Mainpane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
+            // debug
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
 
+    public void setDarkMode() {
+        Mainpane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
+    }
+
+    public void setLightMode() {
+        Mainpane.getStylesheets().clear();
+    }
+
     public void startup() {
 
-            
         if (!isTF2DIRDETECTED()) {
 
             ShowError("TF2 DIRECTORY NOT DETECTED",

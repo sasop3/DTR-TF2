@@ -12,9 +12,6 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-
-    
-
     @Override
     public void start(@SuppressWarnings("exports") Stage stage) throws Exception {
 
@@ -29,7 +26,6 @@ public class App extends Application {
         stage.show();
         Controller tf = loader.getController();
         tf.startup();
-
     }
 
     public static void main(String[] args) {
