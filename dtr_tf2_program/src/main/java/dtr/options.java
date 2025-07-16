@@ -23,6 +23,10 @@ public class options extends Controller {
     @FXML
     protected Pane optionsPane;
 
+
+
+
+
     Properties prop = new Properties();
 
     protected Stage OptionStage = new Stage();

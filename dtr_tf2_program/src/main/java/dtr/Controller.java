@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -22,12 +23,15 @@ import javafx.stage.Stage;
 
 import org.apache.commons.io.FileUtils;
 
-public class Controller {
+public class Controller extends App {
 
     @FXML
     private Label DEMOPATHLABEL;
     @FXML
     private Label TF2DIRLABEL;
+
+    @FXML
+    protected Pane Mainpane;
 
     private File DEMOFILE;
     private Path tf2Path;
@@ -157,15 +161,13 @@ public class Controller {
             dis.skipBytes(260);
             dis.skipBytes(260);
 
-
             return readBytes(dis, 260);
 
         } catch (IOException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
     }
-    
 
     public void ConvertButtonHandler(@SuppressWarnings("exports") ActionEvent e) {
 
@@ -173,12 +175,12 @@ public class Controller {
             ShowError("Demofile not selected", "You have not Selected a demo file");
             return;
         }
-        
+
         String dmxString = "\r\n" +
                 "\"replay_" + getHighestReplayNumber() + "\"\r\n" +
                 "{\r\n" +
                 " \"handle\"  " + "\"" + getHighestReplayNumber() + "\"\r\n" +
-                " \"map\"  \"" + extractMapName(DEMOFILE) + "\"\r\n" + 
+                " \"map\"  \"" + extractMapName(DEMOFILE) + "\"\r\n" +
                 " \"complete\"  \"1\"\r\n" +
                 " \"title\"  \"TESTOFDTR\"\r\n" + // placeholder
                 " \"recon_filename\" " + "\"" + DEMOFILE.getName() + "\"" + "\r\n" +
@@ -206,20 +208,16 @@ public class Controller {
 
         try {
             new options().showOptions();
-
+            // Mainpane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
 
-    public void LoadSettings() {
-        // TO-DO
-
-    }
-
     public void startup() {
 
+            
         if (!isTF2DIRDETECTED()) {
 
             ShowError("TF2 DIRECTORY NOT DETECTED",

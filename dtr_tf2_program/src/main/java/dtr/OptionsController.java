@@ -35,12 +35,13 @@ public class OptionsController extends options {
     public void DLModeToggle() {
         try {
 
-            if (LDMode.isSelected())
-                optionsPane.setStyle("-fx-background-color: #3b3534"); //doesn't work yet
-            else
-                optionsPane.setStyle("");
-
-                
+            if (LDMode.isSelected()) {
+                optionsPane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
+                // setDarkMode();                
+            } else {
+                optionsPane.getStylesheets().clear();
+                // setLightMode();
+            }
 
         } catch (Exception e) {
             ShowError(e.getMessage(), e.getMessage());
