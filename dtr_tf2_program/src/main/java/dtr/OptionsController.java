@@ -2,13 +2,17 @@ package dtr;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javafx.util.Duration;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ToggleButton;
 
 public class OptionsController extends options {
 
@@ -16,12 +20,16 @@ public class OptionsController extends options {
     private CheckBox DupeCheckBox;
 
     public static boolean DupedDemoOption = false;
+    public static boolean LDModeOption = false;
+
     File configFile = new File("dtr_tf2_program/src/main/java/config.cfg");
 
-    public void Savebutton() {
+    public void Savebutton() throws InterruptedException {
 
         DupedDemoOption = DupeCheckBox.isSelected();
+        LDModeOption = LDModeToggleButton.isSelected();
 
+        // This checks if config file exists
         try {
             if (!configFile.exists())
                 configFile.createNewFile();
@@ -31,28 +39,44 @@ public class OptionsController extends options {
             ShowError("Security ERROR",
                     "Config file couldn't be created or modified because security permissions were not granted");
         }
+        // End
+
         prop.setProperty("DupeDemoOption", DupedDemoOption + "");
+        prop.setProperty("DarkMode", LDModeOption + "");
 
         try (OutputStream output = new FileOutputStream(configFile)) {
             prop.store(output, null);
         } catch (Exception e) {
             e.printStackTrace();
+            return;
+        }
+
+        SuccessSave.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.millis(1800));
+        pause.setOnFinished(event -> SuccessSave.setVisible(false));
+        pause.play();
+    }
+
+    public void DarkModeToggle() {
+        if (LDModeToggleButton.isSelected()) {
+            optionsPane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
+            LDModeToggleButton.setText("Dark mode");
+        }
+    }
+
+    public void LightModeToggle() {
+        if (!LDModeToggleButton.isSelected()) {
+            optionsPane.getStylesheets().clear();
+            LDModeToggleButton.setText("Light mode");
         }
     }
 
     public void DLModeToggle() {
         try {
-
-            if (LDMode.isSelected()) {
-                optionsPane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
-                LDMode.setText("Dark mode");
-                mainController.setLightMode();
-                // setDarkMode(); debug
+            if (!LDModeToggleButton.isSelected()) {
+                LightModeToggle();
             } else {
-                optionsPane.getStylesheets().clear();
-                LDMode.setText("Light mode");
-                mainController.setDarkMode();
-                // setLightMode(); debug
+                DarkModeToggle();
             }
 
         } catch (Exception e) {
@@ -64,15 +88,30 @@ public class OptionsController extends options {
         this.mainController = mainController;
     }
 
+    public void LoadOption(String propertyName, Object javafxElement) {
+        boolean value = Boolean.parseBoolean(prop.getProperty(propertyName));
+        if (javafxElement instanceof CheckBox) {
+            ((CheckBox) javafxElement).setSelected(value);
+        } else if (javafxElement instanceof ToggleButton) {
+            ((ToggleButton) javafxElement).setSelected(value);
+            DLModeToggle();
+        } else {
+            System.exit(1);
+            throw new IllegalArgumentException("Unsupported JavaFX element for LoadOption"); // pain
+        }
+    }
+
     public void startup() {
         try (InputStream input = new FileInputStream(configFile)) {
             prop.load(input);
-            if (Boolean.parseBoolean(prop.getProperty("DupeDemoOption"))) {
-                DupeCheckBox.setSelected(true);
-            }
+            LoadOption("DupeDemoOption", DupeCheckBox);
 
-        } catch (Exception e) {
-            ShowError("Load Config error", e.getMessage());
+            LoadOption("DarkMode", LDModeToggleButton);
+
+        } catch (FileNotFoundException e) {
+            // Do nothing
+        } catch (IOException e) {
+            ShowError("Options Startup Error", e.getMessage());
         }
 
     }

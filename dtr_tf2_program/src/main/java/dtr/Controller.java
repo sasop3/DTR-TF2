@@ -66,6 +66,7 @@ public class Controller extends App {
             if (temp.exists()) {
                 tf2Path = temp.toPath();
                 return true;
+
             }
 
             temp = new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays");
@@ -95,6 +96,8 @@ public class Controller extends App {
 
         return check;
     }
+
+
 
     public void DemofileChooser(@SuppressWarnings("exports") ActionEvent e) {
         FileChooser demofilechooser = new FileChooser();

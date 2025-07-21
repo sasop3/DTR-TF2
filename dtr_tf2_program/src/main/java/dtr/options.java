@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -14,10 +15,13 @@ import javafx.stage.Stage;
 public class options extends Controller {
 
     @FXML
-    protected ToggleButton LDMode;
+    protected ToggleButton LDModeToggleButton;
 
     @FXML
     protected Pane optionsPane;
+
+    @FXML
+    protected Label SuccessSave;
 
     protected Controller mainController;
 
