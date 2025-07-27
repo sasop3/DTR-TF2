@@ -22,7 +22,8 @@ public class OptionsController extends options {
     public static boolean DupedDemoOption = false;
     public static boolean LDModeOption = false;
 
-    File configFile = new File("dtr_tf2_program/src/main/java/config.cfg");
+
+
 
     public void Savebutton() throws InterruptedException {
 
@@ -50,11 +51,13 @@ public class OptionsController extends options {
             e.printStackTrace();
             return;
         }
-
+            mainController.UpdateDarkMode();
+        
         SuccessSave.setVisible(true);
         PauseTransition pause = new PauseTransition(Duration.millis(1800));
         pause.setOnFinished(event -> SuccessSave.setVisible(false));
         pause.play();
+
     }
 
     public void DarkModeToggle() {
@@ -84,10 +87,6 @@ public class OptionsController extends options {
         }
     }
 
-    public void setMainController(Controller mainController) {
-        this.mainController = mainController;
-    }
-
     public void LoadOption(String propertyName, Object javafxElement) {
         boolean value = Boolean.parseBoolean(prop.getProperty(propertyName));
         if (javafxElement instanceof CheckBox) {
@@ -113,6 +112,8 @@ public class OptionsController extends options {
         } catch (IOException e) {
             ShowError("Options Startup Error", e.getMessage());
         }
+
+        
 
     }
 

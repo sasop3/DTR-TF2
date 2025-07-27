@@ -5,12 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
  * JavaFX App
  */
 public class App extends Application {
+
+
+    Pane Mainpane;
 
     @Override
     public void start(@SuppressWarnings("exports") Stage stage) throws Exception {

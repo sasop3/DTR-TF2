@@ -25,11 +25,9 @@ public class options extends Controller {
 
     protected Controller mainController;
 
-    Properties prop = new Properties();
-
     protected Stage OptionStage = new Stage();
 
-    public void showOptions() {
+    public void showOptions(Controller mainController) {
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/options.fxml"));
@@ -41,6 +39,7 @@ public class options extends Controller {
             OptionStage.setResizable(false);
             OptionStage.show();
             OptionsController Controller = loader.getController();
+            Controller.mainController = mainController;
             Controller.startup();
         } catch (Exception e) {
             e.printStackTrace();

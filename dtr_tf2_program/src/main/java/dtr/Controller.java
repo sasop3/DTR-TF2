@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -29,12 +31,20 @@ public class Controller extends App {
     private Label DEMOPATHLABEL;
     @FXML
     private Label TF2DIRLABEL;
-
     @FXML
     protected Pane Mainpane;
 
+    File configFile = new File("dtr_tf2_program/src/main/java/config.cfg");
+    Properties prop = new Properties();
+
     private File DEMOFILE;
     private Path tf2Path;
+
+    public Controller controller;
+
+    public void setMainController(Controller mainController) {
+        controller = mainController;
+    }
 
     public static void ShowError(String Title, String TextContent) {
         Alert error = new Alert(AlertType.ERROR);
@@ -96,8 +106,6 @@ public class Controller extends App {
 
         return check;
     }
-
-
 
     public void DemofileChooser(@SuppressWarnings("exports") ActionEvent e) {
         FileChooser demofilechooser = new FileChooser();
@@ -210,9 +218,7 @@ public class Controller extends App {
     public void Openoptions(@SuppressWarnings("exports") ActionEvent e) {
 
         try {
-            new options().showOptions();
-            // Mainpane.getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
-            // debug
+            new options().showOptions(this);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -227,6 +233,19 @@ public class Controller extends App {
         Mainpane.getStylesheets().clear();
     }
 
+    public void UpdateDarkMode() {
+        try (InputStream input = new FileInputStream(configFile)) {
+            prop.load(input);
+            if (Boolean.parseBoolean(prop.getProperty("DarkMode"))) {
+                setDarkMode();
+            } else {
+                setLightMode();
+            }
+        } catch (Exception e) {
+            ShowError("Error Loading file for main panel", e.getMessage());
+        }
+    }
+
     public void startup() {
 
         if (!isTF2DIRDETECTED()) {
@@ -236,6 +255,7 @@ public class Controller extends App {
         }
 
         FindTF2DIR();
+        UpdateDarkMode();
         TF2DIRLABEL.setText(tf2Path + "");
 
     }
