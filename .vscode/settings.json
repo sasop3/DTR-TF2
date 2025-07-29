@@ -5,5 +5,6 @@
     "C:/Users/Ali_a/Desktop/DTR-TF2-main/dtr_tf2_program/resources"
   ],
   "java.configuration.sourceCompatibility": "1.8",
-  "java.configuration.targetCompatibility": "1.8"
+  "java.configuration.targetCompatibility": "1.8",
+  "java.debug.settings.onBuildFailureProceed": true
 }

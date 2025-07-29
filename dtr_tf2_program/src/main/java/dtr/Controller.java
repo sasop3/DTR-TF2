@@ -3,6 +3,7 @@ package dtr;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,12 +47,23 @@ public class Controller extends App {
         controller = mainController;
     }
 
-    public static void ShowError(String Title, String TextContent) {
+    public void ShowError(String Title, String TextContent) {
         Alert error = new Alert(AlertType.ERROR);
         error.setTitle(Title);
         error.setHeaderText(null);
+
         Stage stage = (Stage) error.getDialogPane().getScene().getWindow();
         Image img = new Image(Controller.class.getResourceAsStream("/errorIcon.png"));
+        try (InputStream input = new FileInputStream(configFile)) {
+            prop.load(input);
+            if (Boolean.parseBoolean(prop.getProperty("DarkMode"))) {
+                error.getDialogPane().getStylesheets().add(getClass().getResource("/darkmode.css").toExternalForm());
+            } else {
+                error.getDialogPane().getStylesheets().clear();
+            }
+        } catch (Exception e) {
+            ShowError("Error Loading file for main panel", e.getMessage());
+        }
         stage.getIcons().add(img);
         error.setContentText(TextContent);
         error.showAndWait();
@@ -68,7 +80,7 @@ public class Controller extends App {
                     new File(i + "SteamLibrary/steamapps/common/Team Fortress 2/tf/replay/client/replays")
                             .exists()) {
                 ShowError("MULTIPLE TF2 DIRECTROIES DETECTED", "Multiple TF2 DIRECTORIES WERE DETECTED\\n" + //
-                        " Please manually choose the location of your tf2 directory");
+                        " Please manually choose the location of your replay Folder\n to be exactly like Team Fortress 2/tf/replay/client/replays");
             }
 
             temp = new File(
@@ -111,6 +123,12 @@ public class Controller extends App {
         FileChooser demofilechooser = new FileChooser();
         demofilechooser.setTitle("Choose DemoFile");
         DEMOFILE = demofilechooser.showOpenDialog(null);
+
+        if (!DEMOFILE.getName().endsWith(".dem")) {
+            ShowError("Invalid DEMO FILE", "File Must have the .dem file extension");
+            DEMOFILE = null;
+            return;
+        }
 
         if (DEMOFILE != null)
             DEMOPATHLABEL.setText(DEMOFILE.getAbsolutePath());
@@ -183,7 +201,7 @@ public class Controller extends App {
     public void ConvertButtonHandler(@SuppressWarnings("exports") ActionEvent e) {
 
         if (DEMOFILE == null) {
-            ShowError("Demofile not selected", "You have not Selected a demo file");
+            ShowError("Demofile not selected", "You have not selected a demo file");
             return;
         }
 
@@ -193,7 +211,7 @@ public class Controller extends App {
                 " \"handle\"  " + "\"" + getHighestReplayNumber() + "\"\r\n" +
                 " \"map\"  \"" + extractMapName(DEMOFILE) + "\"\r\n" +
                 " \"complete\"  \"1\"\r\n" +
-                " \"title\"  \"TESTOFDTR\"\r\n" + // placeholder
+                " \"title\" " + "\"" + DEMOFILE.getName() + "\"" + "\r\n" +
                 " \"recon_filename\" " + "\"" + DEMOFILE.getName() + "\"" + "\r\n" +
                 "}";
 
@@ -204,10 +222,10 @@ public class Controller extends App {
                 FileUtils.moveFileToDirectory(DEMOFILE, tf2Path.toFile(), false);
             }
 
-            File file = new File("replay_" + getHighestReplayNumber() + ".dmx");
-            file.createNewFile();
-            FileUtils.writeStringToFile(file, dmxString, StandardCharsets.UTF_8);
-            FileUtils.moveToDirectory(file, tf2Path.toFile(), false);
+            File dmxFile = new File("replay_" + getHighestReplayNumber() + ".dmx");
+            dmxFile.createNewFile();
+            FileUtils.writeStringToFile(dmxFile, dmxString, StandardCharsets.UTF_8);
+            FileUtils.moveToDirectory(dmxFile, tf2Path.toFile(), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -233,6 +251,18 @@ public class Controller extends App {
         Mainpane.getStylesheets().clear();
     }
 
+    public void CreateConfigFile() {
+        try {
+            if (!configFile.exists())
+                configFile.createNewFile();
+        } catch (IOException e) {
+            ShowError("IO ERROR", e.getMessage());
+        } catch (SecurityException e) {
+            ShowError("Security ERROR",
+                    "Config file couldn't be created or modified because security permissions were not granted");
+        }
+    }
+
     public void UpdateDarkMode() {
         try (InputStream input = new FileInputStream(configFile)) {
             prop.load(input);
@@ -241,6 +271,8 @@ public class Controller extends App {
             } else {
                 setLightMode();
             }
+        } catch (FileNotFoundException e) {
+            CreateConfigFile();
         } catch (Exception e) {
             ShowError("Error Loading file for main panel", e.getMessage());
         }

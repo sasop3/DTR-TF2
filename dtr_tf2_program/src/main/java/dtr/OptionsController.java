@@ -24,23 +24,12 @@ public class OptionsController extends options {
 
 
 
-
     public void Savebutton() throws InterruptedException {
 
         DupedDemoOption = DupeCheckBox.isSelected();
         LDModeOption = LDModeToggleButton.isSelected();
 
-        // This checks if config file exists
-        try {
-            if (!configFile.exists())
-                configFile.createNewFile();
-        } catch (IOException e) {
-            ShowError("IO ERROR", e.getMessage());
-        } catch (SecurityException e) {
-            ShowError("Security ERROR",
-                    "Config file couldn't be created or modified because security permissions were not granted");
-        }
-        // End
+        CreateConfigFile();
 
         prop.setProperty("DupeDemoOption", DupedDemoOption + "");
         prop.setProperty("DarkMode", LDModeOption + "");
@@ -51,8 +40,8 @@ public class OptionsController extends options {
             e.printStackTrace();
             return;
         }
-            mainController.UpdateDarkMode();
-        
+        mainController.UpdateDarkMode();
+
         SuccessSave.setVisible(true);
         PauseTransition pause = new PauseTransition(Duration.millis(1800));
         pause.setOnFinished(event -> SuccessSave.setVisible(false));
@@ -112,8 +101,6 @@ public class OptionsController extends options {
         } catch (IOException e) {
             ShowError("Options Startup Error", e.getMessage());
         }
-
-        
 
     }
 

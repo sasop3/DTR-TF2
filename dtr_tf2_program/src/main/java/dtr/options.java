@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class options extends Controller {
@@ -37,6 +38,7 @@ public class options extends Controller {
             OptionStage.getIcons().add(new Image("/optionsIcon.png"));
             OptionStage.setTitle("Options");
             OptionStage.setResizable(false);
+            OptionStage.initModality(Modality.APPLICATION_MODAL);
             OptionStage.show();
             OptionsController Controller = loader.getController();
             Controller.mainController = mainController;
